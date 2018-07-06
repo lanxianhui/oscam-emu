@@ -1524,14 +1524,12 @@ struct s_reader                                     //contains device info, read
 	uint8_t         des_key_length;
 	uchar           atr[64];
 	uchar           card_atr[64];                   // ATR readed from card
-	int8_t          card_atr_length;                // length of ATR 
-	uchar			card_atr2[64];					// Nagra layer ATR
-	int8_t          card_atr_length2;               // length of Nagra layer ATR 
+	int8_t          card_atr_length;                // length of ATR
+	int8_t          seca_nagra_card;                // seca nagra card 
 	int32_t         atrlen;
 	SIDTABS         sidtabs;
 	SIDTABS         lb_sidtabs;
 	uchar           hexserial[8];
-	uchar			hexserial2[8];
 	int32_t         nprov;
 	uchar           prid[CS_MAXPROV][8];
 	uchar           sa[CS_MAXPROV][4];              // viaccess & seca
@@ -1642,7 +1640,6 @@ struct s_reader                                     //contains device info, read
 	uint16_t   modemstat;
 #endif
 	unsigned char   rom[15];
-	unsigned char   rom2[15];
 	unsigned char   irdId[4];
 	unsigned char	payload4C[15];
 	uint16_t		VgCredit;

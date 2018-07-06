@@ -65,11 +65,11 @@ static unsigned char T1_Block_LRC(unsigned char *data, uint32_t length)
 	return lrc;
 }
 
-static int32_t T1_Block_SendIBlock(struct s_reader *reader, uint8_t *block_data, unsigned char len, unsigned char *inf, unsigned char ns, int32_t more, uint32_t timeout, uint8_t block_nad)
+static int32_t T1_Block_SendIBlock(struct s_reader *reader, uint8_t *block_data, unsigned char len, unsigned char *inf, unsigned char ns, int32_t more,                    uint32_t timeout)
 {
 	int length = len + 4;
 
-	block_data[0] = block_nad;
+	block_data[0] = T1_BLOCK_NAD;
 	block_data[1] = T1_BLOCK_I | ((ns << 6) & 0x40);
 	if(more)
 		{ block_data[1] |= 0x20; }
@@ -139,7 +139,7 @@ static int32_t Protocol_T1_ReceiveBlock(struct s_reader *reader, uint8_t *block_
 	return ret;
 }
 
-int32_t Protocol_T1_Command(struct s_reader *reader, unsigned char *command, uint16_t command_len, unsigned char *rsp, uint16_t *lr, uint8_t block_nad)
+int32_t Protocol_T1_Command(struct s_reader *reader, unsigned char *command, uint16_t command_len, unsigned char *rsp, uint16_t *lr)
 {
 	uint8_t block_data[T1_BLOCK_MAX_SIZE];
 	uint8_t rsp_type, bytes, nr, wtx;
@@ -147,12 +147,6 @@ int32_t Protocol_T1_Command(struct s_reader *reader, unsigned char *command, uin
 	int32_t ret, timeout;
 	bool more;
 	uint32_t block_length = 0;
-	
-	if(block_nad == 0)
-	{
-		block_nad = T1_BLOCK_NAD;
-	}
-	
 	if(command[1] == T1_BLOCK_S_IFS_REQ)
 	{
 		uint8_t inf = command[3];
@@ -218,7 +212,7 @@ int32_t Protocol_T1_Command(struct s_reader *reader, unsigned char *command, uin
 	/* Create an I-Block */
 	timeout = ICC_Async_GetTimings(reader, reader->CWT);  // we are going to send: CWT timeout
 	//cs_sleepus(reader->block_delay); // we were receiving, now sending so wait BGT time
-	ret = T1_Block_SendIBlock(reader, block_data, bytes, command, reader->ns, more, timeout, block_nad);
+	ret = T1_Block_SendIBlock(reader, block_data, bytes, command, reader->ns, more, timeout);
 	rdr_log_dbg(reader, D_IFD, "Sending block I(%d,%d)", reader->ns, more);
 
 	while((ret == OK) && more)
@@ -249,7 +243,7 @@ int32_t Protocol_T1_Command(struct s_reader *reader, unsigned char *command, uin
 				/* Send an I-Block */
 				timeout = ICC_Async_GetTimings(reader, reader->CWT);  // we are going to send: CWT timeout
 				//cs_sleepus(reader->block_delay); // we were receiving, now sending so wait BGT time
-				ret = T1_Block_SendIBlock(reader, block_data, bytes, command + counter, reader->ns, more, timeout, block_nad);
+				ret = T1_Block_SendIBlock(reader, block_data, bytes, command + counter, reader->ns, more, timeout);
 				rdr_log_dbg(reader, D_IFD, "Protocol: Sending block I(%d,%d)", reader->ns, more);
 
 			}
