@@ -242,6 +242,8 @@ SRC-$(CONFIG_LIB_IDEA) += cscrypt/i_skey.c
 SRC-y += cscrypt/md5.c
 SRC-$(CONFIG_LIB_RC6) += cscrypt/rc6.c
 SRC-$(CONFIG_LIB_SHA1) += cscrypt/sha1.c
+SRC-$(CONFIG_LIB_SHA256) += cscrypt/sha256.c
+SRC-$(CONFIG_LIB_AESCBC) += cscrypt/aescbc.c
 
 SRC-$(CONFIG_WITH_CARDREADER) += csctapi/atr.c
 SRC-$(CONFIG_WITH_CARDREADER) += csctapi/icc_async.c
